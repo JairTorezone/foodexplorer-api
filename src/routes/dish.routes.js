@@ -5,5 +5,8 @@ const dishRoutes = Router();
 const dishController = new DishController();
 
 dishRoutes.post("/", dishController.create);
+dishRoutes.get("/:id", dishController.showId);
+dishRoutes.get("/", dishController.index);
+dishRoutes.delete("/:id", dishController.delete);
 
 module.exports = dishRoutes;

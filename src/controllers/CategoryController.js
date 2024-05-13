@@ -3,7 +3,7 @@ const AppError = require("../utils/AppError");
 
 class CategoryController {
   async create(request, response) {
-    const { name } = request.body;
+    const { name, dish_id } = request.body;
 
     if (!name) {
       throw new AppError("Nome da categoria é obrigatório");
@@ -15,9 +15,9 @@ class CategoryController {
       throw new AppError("Categoria já foi criada");
     }
 
-    await knex("category").insert({ name });
+    await knex("category").insert({ name, dish_id });
 
-    return response.status(201).json({ name });
+    return response.status(201).json({ name, dish_id });
   }
 }
 
