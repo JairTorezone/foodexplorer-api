@@ -6,12 +6,12 @@ exports.up = (knex) =>
       .integer("user_id")
       .references("id")
       .inTable("users")
-      .onDelete("CASCADE");;
+      .onDelete("CASCADE");
     table
       .integer("dish_id")
       .references("id")
       .inTable("dish")
-      .onDelete("CASCADE");;
+      .onDelete("CASCADE");
   });
 
 exports.down = (knex) => knex.schema.dropTable("favorite");
