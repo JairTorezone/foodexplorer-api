@@ -3,7 +3,9 @@ const AppError = require("../utils/AppError");
 
 class FavoriteDishController {
   async create(request, response) {
-    const { user_id, dish_id } = request.body;
+    const { dish_id } = request.body;
+
+    const user_id = request.user.id;
 
     const user = await knex("users").where({ id: user_id }).first();
 
@@ -23,12 +25,12 @@ class FavoriteDishController {
   }
 
   async index(request, response) {
-    const { user_id } = request.params;
+    const id = request.user.id;
 
     let dish = await knex("favorite")
       .select(["dish.imageUrl", "dish.name"])
       .innerJoin("dish", "dish.id", "favorite.dish_id")
-      .where({ user_id: user_id });
+      .where({ user_id: id });
 
     return response.json(dish);
   }
