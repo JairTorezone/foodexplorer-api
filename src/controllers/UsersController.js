@@ -26,6 +26,9 @@ class UsersController {
   async update(request, response) {
     const { name, email, password, old_password, updated_at } = request.body;
     const user_id = request.user.id;
+
+    const { role } = request.query;
+
     console.log(user_id);
 
     const user = await knex("users").where({ id: user_id }).first();
@@ -58,7 +61,7 @@ class UsersController {
 
     await knex("users")
       .where({ id: user_id })
-      .update({ name, email, password: user.password });
+      .update({ name, email, password: user.password, role });
 
     user.updated_at = new Date();
 

@@ -102,6 +102,73 @@ class DishController {
 
     return response.json("Deletado com sucesso");
   }
+
+  async update(request, response) {
+    const { name, description, updated_at, price, category, ingredients } =
+      request.body;
+    const { id } = request.params;
+
+    const dishId = await knex("dish").where({ id }).first();
+
+    if (!dishId) {
+      throw new AppError("Prato não encontrado");
+    }
+
+    if (name === "") {
+      throw new AppError("Nome não pode esta vazio");
+    }
+
+    if (description === "") {
+      throw new AppError("Descrição não pode esta vazio");
+    }
+
+    if (isNaN(price)) {
+      throw new AppError("Valor do preço inválido");
+    }
+
+    if (price < 1) {
+      throw new AppError("Digite o valor do prato");
+    }
+
+    if (ingredients) {
+      await knex("ingredients").where({ dish_id: id }).delete();
+      const ingredientInsert = ingredients.map((ingredient) => {
+        return {
+          title: ingredient,
+          dish_id: id,
+        };
+      });
+
+      await knex("ingredients").insert(ingredientInsert);
+    }
+
+    if (category) {
+      await knex("category").where({ dish_id: id }).delete();
+      const categoryInsert = category.map((item) => {
+        return {
+          dish_id: id,
+          title: item,
+        };
+      });
+
+      await knex("category").insert(categoryInsert);
+    }
+
+    dishId.name = name ?? dishId.name;
+    dishId.description = description ?? dishId.description;
+    dishId.price = price ?? dishId.price;
+    dishId.updated_at = new Date();
+
+    await knex("dish").where({ id }).update({
+      name: dishId.name,
+      description: dishId.description,
+      price: dishId.price,
+    });
+
+    return response.json({ price });
+
+    //fim linha
+  }
 }
 
 module.exports = DishController;
