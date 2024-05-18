@@ -1,29 +1,26 @@
-const { response } = require("express");
 const knex = require("../database/knex");
+const AppError = require("../utils/AppError");
 
 class OrderController {
   async create(request, response) {
     const { priceTotal, item_product } = request.body;
-    const { user_id } = request.params;
-    const { dish_id, discount } = request.query;
+    const user_id = request.user.id;
 
-    const [order_id] = await knex("order").insert({
-      priceTotal,
-      user_id,
-    });
+    if (!item_product) {
+      throw new AppError("Carrinho vazio");
+    }
 
-    const itemProductInsert = item_product.map((amount_item) => {
+    const itemProductInsert = item_product.map((item, qtd) => {
       return {
         order_id,
-        dish_id: dish_id,
-        amount_item,
-        discount,
+        dish_id: item,
+        amount_item: qtd,
       };
     });
 
     await knex("item_product").insert(itemProductInsert);
 
-    const allItemProduct = await knex("item_product");
+    let total;
 
     return response.status(201).json();
   }

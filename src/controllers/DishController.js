@@ -166,8 +166,6 @@ class DishController {
     });
 
     return response.json({ price });
-
-    //fim linha
   }
 }
 
