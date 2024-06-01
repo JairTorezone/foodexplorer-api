@@ -77,7 +77,7 @@ class DishController {
         .innerJoin("dish", "dish.id", "ingredients.dish_id")
         .orderBy("dish.name");
     } else {
-      dish = await knex("dish").whereLike("name", `%${title}%`).orderBy("name");
+      dish = await knex("dish").whereLike("name", `%${name}%`).orderBy("name");
     }
 
     const allIngredients = await knex("ingredients");
