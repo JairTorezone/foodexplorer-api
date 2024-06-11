@@ -1,12 +1,11 @@
-import { request } from "express";
-import AppError from "../utils/AppError";
+const AppError = require("../utils/AppError");
 
 function verifyUserAuthorization(roleToVerify) {
   return (request, response, next) => {
     const { role } = request.user;
 
-    if (role != roleToVerify) {
-      throw new AppError("Unauthorized", 401);
+    if (!roleToVerify.includes(role)) {
+      throw new AppError("Unauthorized ***", 401);
     }
 
     return next();

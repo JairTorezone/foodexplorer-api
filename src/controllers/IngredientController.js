@@ -3,7 +3,7 @@ const AppError = require("../utils/AppError");
 
 class IngredientController {
   async index(request, response) {
-    const { dish_id } = request.body;
+    const { dish_id } = request.params;
 
     const ingredients = await knex("ingredients")
       .where({ dish_id })

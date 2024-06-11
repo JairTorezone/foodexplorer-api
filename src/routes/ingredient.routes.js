@@ -4,6 +4,6 @@ const IngredientController = require("../controllers/IngredientController");
 const ingredientRoutes = Router();
 const ingredientController = new IngredientController();
 
-ingredientRoutes.get("/", ingredientController.index);
+ingredientRoutes.get("/:dish_id", ingredientController.index);
 
 module.exports = ingredientRoutes;
