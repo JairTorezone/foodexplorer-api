@@ -3,6 +3,7 @@ exports.up = (knex) =>
     table.increments("id");
     table.text("name").notNullable();
     table.text("description").notNullable();
+    table.text("category").notNullable();
     table.text("imageUrl");
 
     table.timestamp("created_at").default(knex.fn.now());

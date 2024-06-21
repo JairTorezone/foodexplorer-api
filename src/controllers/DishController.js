@@ -14,9 +14,14 @@ class DishController {
       throw new AppError("Descreva o prato");
     }
 
+    if (!category) {
+      throw new AppError("Categoria do prato é obrigatório");
+    }
+
     const [dish_id] = await knex("dish").insert({
       name,
       description,
+      category,
       price,
       imageUrl,
     });
@@ -30,16 +35,7 @@ class DishController {
 
     await knex("ingredients").insert(ingredientInsert);
 
-    const categoryInsert = category.map((title) => {
-      return {
-        dish_id,
-        title,
-      };
-    });
-
-    await knex("category").insert(categoryInsert);
-
-    return response.status(201).json();
+    return response.status(201).json("prato criado com sucesso");
   }
 
   async showId(request, response) {
@@ -49,9 +45,8 @@ class DishController {
     const ingredients = await knex("ingredients")
       .where({ dish_id: id })
       .orderBy("title");
-    const category = await knex("category").where({ dish_id: id });
 
-    return response.json({ ...dish, ingredients, category });
+    return response.json({ ...dish, ingredients });
   }
 
   async index(request, response) {
@@ -68,6 +63,7 @@ class DishController {
         .select([
           "dish.id",
           "dish.name",
+          "dish.category",
           "dish.description",
           "dish.imageUrl",
           "dish.price",
@@ -142,30 +138,20 @@ class DishController {
       await knex("ingredients").insert(ingredientInsert);
     }
 
-    if (category) {
-      await knex("category").where({ dish_id: id }).delete();
-      const categoryInsert = category.map((item) => {
-        return {
-          dish_id: id,
-          title: item,
-        };
-      });
-
-      await knex("category").insert(categoryInsert);
-    }
-
     dishId.name = name ?? dishId.name;
     dishId.description = description ?? dishId.description;
+    dishId.category = category ?? dishId.category;
     dishId.price = price ?? dishId.price;
     dishId.updated_at = new Date();
 
     await knex("dish").where({ id }).update({
       name: dishId.name,
       description: dishId.description,
+      category: dishId.category,
       price: dishId.price,
     });
 
-    return response.json({ price });
+    return response.json("Prato atualizado com sucesso");
   }
 }
 
